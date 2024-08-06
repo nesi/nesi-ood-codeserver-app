@@ -1,6 +1,7 @@
 <%
    user = OodSupport::User.new
-   services_node = Resolv.getaddress("servicesnode")
+   ood_nfs_server = Resolv.getaddress("ood-nfs-node")
+   software_nfs_server = Resolv.getaddress("external-nfs")
 %>
 ---
 batch_connect:
