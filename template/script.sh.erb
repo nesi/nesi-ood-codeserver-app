@@ -43,9 +43,10 @@ if [[ -f "$CPP_FILE" ]]; then
 echo "$(date): Started code-server"
 echo ""
 
-# avoind using ${host} for --bind-addr
+# pre-compiled binary is temporarily hosted on, 
 export PATH=/home/shared/dsen018/code-server-4.91.1-linux-amd64/bin:$PATH
 
+#avoid using ${host} for --bind-addr
 code-server \
     --auth="password" \
     --bind-addr="0.0.0.0:8443" \
