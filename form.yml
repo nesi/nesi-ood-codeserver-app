@@ -1,17 +1,38 @@
 ---
+description: Request code-server
+submit: submit.yml.erb
+title: code-server
+
 cluster: "my-k8s-cluster"
 
 form:
-  - cpu
-  - memory
-  - wall_time
+  - bc_queue
+  - bc_num_hours
+  - num_cores
+  - num_mem
+  - node
 
 attributes:
-  cpu: 2
-  memory: 4
-  wall_time:
+  node: ""
+  bc_queue:
+    value: interactive
+  bc_num_hours:
+    max: 8
+    min: 1
+    step: 1
+    value: 1
     widget: number_field
-    label: "Hours"
-    min: 4
-    max: 12
-    value: 8
+  num_cores:
+    label: Number of cores
+    max: 16
+    min: 1
+    value: 2
+    widget: number_field
+  num_mem:
+    label: Memory per job (GB)
+    max: 32
+    min: 1
+    step: 1
+    value: 1
+    widget: number_field
+

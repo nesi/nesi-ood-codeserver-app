@@ -44,6 +44,7 @@ echo "$(date): Started code-server"
 echo ""
 
 # avoind using ${host} for --bind-addr
+export PATH=/home/shared/dsen018/code-server-4.91.1-linux-amd64/bin:$PATH
 
 code-server \
     --auth="password" \
