@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+echo "module purge"
+module purge
+
+# load codetudio Server
+echo "module load"
+module load <%= context.Codeserver %>
+
+
 # Set our working directory.
 export WORKING_DIR="<%= session.staged_root %>"
 
@@ -43,8 +51,6 @@ if [[ -f "$CPP_FILE" ]]; then
 echo "$(date): Started code-server"
 echo ""
 
-# pre-compiled binary is temporarily hosted on, 
-export PATH=/home/shared/dsen018/code-server-4.91.1-linux-amd64/bin:$PATH
 
 #avoid using ${host} for --bind-addr
 code-server \
