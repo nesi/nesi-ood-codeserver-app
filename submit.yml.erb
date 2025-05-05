@@ -23,6 +23,10 @@ script:
       image: "ghcr.io/nesi/nesi-docker-base:v0.2.0"
       command: ["/bin/bash","-l","<%= staged_root %>/job_script_content.sh"]
       restart_policy: 'OnFailure'
+      <% if nesi_gid %>
+      supplemental_groups:
+        - <%= nesi_gid %>
+      <% end %>
       env:
         TZ: "Pacific/Auckland"
         LMOD_SITE_MODULEPATH: "/opt/nesi/CS400_centos7_bdw/modules/all"

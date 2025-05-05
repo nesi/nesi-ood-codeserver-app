@@ -1,3 +1,9 @@
+<%-
+  groups = OodSupport::User.new.groups.sort_by(&:id).tap { |groups|
+    groups.unshift(groups.delete(OodSupport::Process.group))
+  }.map(&:name).grep(/.*[0-9]{5}/)
+-%>
+
 ---
 description: Request code-server
 submit: submit.yml.erb
@@ -6,6 +12,7 @@ title: code-server
 cluster: "my-k8s-cluster"
 
 form:
+  - account 
   - codeserver
   - bc_queue
   - bc_num_hours
@@ -14,6 +21,14 @@ form:
   - node
 
 attributes:
+  account:    # Add this section
+    label: "Project Code"
+    widget: select
+    options:
+      <%- groups.each do |group| %>
+      - "<%= group %>"
+      <%- end %>
+    required: true
   codeserver:
     widget: select
     label: "code-server Version"
@@ -41,4 +56,3 @@ attributes:
     step: 1
     value: 1
     widget: number_field
-
