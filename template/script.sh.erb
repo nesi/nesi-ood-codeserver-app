@@ -51,6 +51,15 @@ if [[ -f "$CPP_FILE" ]]; then
 echo "$(date): Started code-server"
 echo ""
 
+## Fix terminal colors for ls command with a wrapper script for system ls
+mkdir -p ~/ondemand/ood_bin
+cat > ~/ondemand/ood_bin/ls <<'EOF'
+#!/bin/bash
+/usr/bin/ls --color=auto "$@"
+EOF
+
+chmod +x ~/ondemand/ood_bin/ls
+export PATH="$HOME/ondemand/ood_bin:$PATH"
 
 #avoid using ${host} for --bind-addr
 code-server \
