@@ -1,5 +1,6 @@
 # Export the module function if it exists
 
+<%- if context.cluster == "my-k8s-cluster" -%>
 exec &> >(tee -a "pod.log")
 
 # Export the module function if it exists
@@ -10,10 +11,26 @@ source /bin/save_passwd_as_secret
 export host="$HOST_CFG"
 export port="$PORT_CFG"
 
+export BIND_PORT=8443
+
+password=$PASSWORD
+
+<%- else -%>
+# Find available port to run server on
+port=$(find_port ${host})
+JUPYTER_PORT="${port}"
+HOST_CFG="${host}"
+PORT_CFG="${port}"
+
+export BIND_PORT=$port
+password="$(create_passwd 16)"
+PASSWORD=$password
+
+<%- end -%>
+
 echo "host is: ${host}"
 echo "port is: ${port}"
 
-password=$PASSWORD
 export password PASSWORD
 
 # these are set by pam on normal ssh login
