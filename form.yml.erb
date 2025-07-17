@@ -2,6 +2,10 @@
   groups = OodSupport::User.new.groups.sort_by(&:id).tap { |groups|
     groups.unshift(groups.delete(OodSupport::Process.group))
   }.map(&:name).grep(/.*[0-9]{5}/)
+  all_groups = OodSupport::User.new.groups.sort_by(&:id).tap { |groups|
+    groups.unshift(groups.delete(OodSupport::Process.group))
+  }.map(&:name)
+  has_slurm_apps = all_groups.include?("nesi-staff") || all_groups.include?("ondemand-slurm-apps")
 -%>
 
 ---
@@ -9,18 +13,33 @@ description: Request code-server
 submit: submit.yml.erb
 title: code-server
 
-cluster: "my-k8s-cluster"
-
 form:
+  - cluster
   - account 
   - codeserver
-  - bc_queue
   - bc_num_hours
   - num_cores
   - num_mem
   - node
 
 attributes:
+  # select the cluster
+  cluster:
+    widget: "select"
+    options:
+      - [
+          "Kubernetes", "my-k8s-cluster",
+          data-hide-gpu: true,
+          data-set-gpu: 'none',
+        ]
+<% if has_slurm_apps %>
+      - ["Slurm HPC", "nesi_tdc_hpc"]
+    help: |
+      Kubernetes jobs are more likely to start promptly - "Slurm HPC" jobs may have to wait in the queue.
+      If you need Apptainer or GPUs then you must choose "Slurm HPC" currently.
+<% end %>
+    cacheable: false  # we always want k8s on top as the default?
+    
   account:    # Add this section
     label: "Project Code"
     widget: select
@@ -29,6 +48,8 @@ attributes:
       - "<%= group %>"
       <%- end %>
     required: true
+    display: true
+
   codeserver:
     widget: select
     label: "code-server Version"
@@ -57,3 +78,13 @@ attributes:
     step: 1
     value: 1
     widget: number_field
+  gpu:
+    label: GPU
+    widget: select
+    options:
+      - 'none'
+      - [ "L4 (24 GB VRAM, aimed at AI workloads, up to single precision)", 'L4' ]
+      - [ "H100 (96 GB VRAM, recommend submitting as Slurm jobs due to potential wait times)", "H100" ]
+    help: |
+      **WARNING**: selecting a GPU can significantly increase the time it takes for your session to start!
+    display: true
