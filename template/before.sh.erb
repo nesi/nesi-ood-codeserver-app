@@ -15,3 +15,9 @@ echo "port is: ${port}"
 
 password=$PASSWORD
 export password PASSWORD
+
+# these are set by pam on normal ssh login
+export LMOD_CONFIG_DIR=/opt/nesi/etc/lmod
+export MODULEPATH_ROOT=/opt/nesi/lmod
+export MODULEPATH=/opt/nesi/lmod/generic
+export BASH_ENV=/usr/share/lmod/lmod/init/bash

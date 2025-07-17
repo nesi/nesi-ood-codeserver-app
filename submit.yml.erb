@@ -15,7 +15,7 @@
    # Same approach as used in form.yml
    all_user_groups = OodSupport::User.new.groups.sort_by(&:id).tap { |groups|
      groups.unshift(groups.delete(OodSupport::Process.group))
-   }.map(&:name)
+   }.map(&:name).grep(/.*[0-9]{5}/)
    
    # Collect GIDs for ALL user's projects (not just selected ones)
    additional_gids = []
@@ -35,6 +35,7 @@
 ---
 batch_connect:
   template: "basic"
+<% if cluster == "my-k8s-cluster" -%>
 script:
   wall_time: "<%= bc_num_hours.to_i * 3600 %>"
   native:
@@ -51,6 +52,10 @@ script:
       <% end %>
       env:
         TZ: "Pacific/Auckland"
+        LMOD_CONFIG_DIR: "/opt/nesi/etc/lmod"
+        MODULEPATH_ROOT: "/opt/nesi/lmod"
+        MODULEPATH: "/opt/nesi/lmod/generic"
+        BASH_ENV: "/usr/share/lmod/lmod/init/bash"
         LMOD_SITE_MODULEPATH: "/opt/nesi/lmod/generic:/opt/nesi/lmod/zen3:/opt/nesi/lmod/mahuika"
         PRIMARY_PROJECT: "<%= account %>"
         <% if additional_projects.present? %>
@@ -110,3 +115,15 @@ script:
 
             kubectl get secret ${CFG} -o json | jq --arg key $KEY --arg value $VALUE '.data[$key] = $value'  | kubectl apply -f -
           mount_path: '/opt/open_ondemand/helpers'
+<%- else -%>
+script:
+  accounting_id: "<%= account %>"
+  wall_time: "<%= bc_num_hours.to_i * 3600 %>"
+  native:
+    - "--ntasks"
+    - "1"
+    - "--cpus-per-task"
+    - "<%= num_cores %>"
+    - "--mem"
+    - "<%= num_mem %>G"
+<%- end -%>
