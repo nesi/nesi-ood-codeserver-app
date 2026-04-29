@@ -1,7 +1,6 @@
 ---
 name: code-server
-category: Applications
-subcategory: Servers
+category: Interactive Development
 role: batch_connect
 description: |
   This will launch Code Server
