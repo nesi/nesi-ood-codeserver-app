@@ -58,6 +58,7 @@ script:
         BASH_ENV: "/usr/share/lmod/lmod/init/bash"
         LMOD_SITE_MODULEPATH: "/opt/nesi/lmod/generic:/opt/nesi/lmod/zen3:/opt/nesi/lmod/mahuika"
         PRIMARY_PROJECT: "<%= account %>"
+        OMP_NUM_THREADS: "<%= cores %>"
         <% if additional_projects.present? %>
         ADDITIONAL_PROJECTS: "<%= Array(additional_projects).join(':') %>"
         <% end %>
