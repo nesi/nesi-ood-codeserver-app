@@ -142,4 +142,8 @@ script:
     - "<%= cores %>"
     - "--mem"
     - "<%= memory %>G"
+<%- if gpu != "none" -%>
+    - "--gpus-per-node"
+    - "<%= gpu %>"
+<%- end -%>
 <%- end -%>
